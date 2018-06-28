@@ -3,19 +3,11 @@ import requests
 from requests.auth import HTTPBasicAuth
 from random import randint
 
-
 data = {
     'users': 0,
     'posts': 0,
     'likes': 0
 }
-emails = (
-    'valera@gmail.com',
-    'vanya@gmail.com',
-    'alex@gmail.com',
-    'apelih24@gmail.com',
-    'dima@gmail.com'
-)
 headers = {'content-type': 'application/json'}
 number_of_posts = 0
 
@@ -28,6 +20,21 @@ with open('config.txt') as f:
             data['posts'] = line_data[1]
         elif line_data[0] == 'max_likes_per_user':
             data['likes'] = line_data[1]
+
+# Creating emails for users
+names = ('valera', 'vanya', 'alex', 'sergey', 'dima')
+count = 0
+iterations = 0
+emails = []
+for i in range(int(data['users'])):
+    if iterations != 0:
+        emails.append(names[count] + str(iterations) + '@gmail.com')
+    else:
+        emails.append(names[count] + '@gmail.com')
+    count += 1
+    if count == 5:
+        count = 0
+        iterations += 1
 
 for user in range(int(data['users'])):
     # Sign up users
@@ -68,7 +75,7 @@ for user in range(int(data['users'])):
         )
         # print(r.status_code)
         number_of_posts += 1
-
+print('Finish user and posts creation')
 # print()
 # Like posts
 for user in range(int(data['users'])):
@@ -82,7 +89,7 @@ for user in range(int(data['users'])):
             'http://127.0.0.1:8000/api/socialnetwork/like/%i/' % post,
             auth=HTTPBasicAuth(log_in_data['username'], log_in_data['password'])
         )
-        # print(r.status_code)
+        print(r.status_code)
         # if r.status_code == 404:
         #     print(post)
         #     print(r.text)
